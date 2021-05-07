@@ -12,4 +12,11 @@ struct Data{
     std::vector<int> w;
 };
 
+struct Data2{
+    std::vector<int> current;
+    int z;
+    int z_reduction;
+};
+
 Data initData(int n,int c,std::vector<int> w);
+Data2 initData2(std::vector<int> current,int z,int z_reduction);

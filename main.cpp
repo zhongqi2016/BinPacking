@@ -4,111 +4,131 @@
 #include <sstream>
 #include <dirent.h>
 
-#include "state.h"
+//#include "state.h"
 #include "UpperBound.h"
 #include "LowerBound.h"
 #include "Data.h"
 
 using namespace std;
 
+//void printItems(const vector<int> &items) {
+//    for (int i = 0; i < items.size(); ++i) {
+//        printf("%d ", items[i]);
+//    }
+//    printf("\n");
+//}
 
-int calc(vector<int> now, int z, int UB, int LB, int z_reduction) {
-    if (z == now.size() || now[z] == 0) return z;
-    int min_res = UB;
+int calc(stack<Data2> s, int UB, int LB, int c) {
+//    int min_res = UB;
+    while (!s.empty()) {
+        Data2 node = s.top();
+        s.pop();
+        int z = node.z;
+        int z_reduction = node.z_reduction;
+        vector<int> now = node.current;
 
-    for (int i = 0; i < now.size(); ++i) {
-        printf("%d ", now[i]);
-    }
-    printf("\n");
+        if (z == now.size() || now[z] == 0) return z + z_reduction;
 
-    int j;
-    int i = z;
 
-    //to all feasible initialized bins
-    for (j = 0; j < z; ++j) {
-        if (now[j] + now[i] <= c) {
-            int z1 = z;
-            vector<int> current(now);
-            current[j] += current[i];
-            current[i] = 0;
-            sort(current.rbegin(), current.rend());
-            current.pop_back();            //delete the last item
-            int zr = reduction(current, z1) + z_reduction;
-            int LB_current = lowerBound2(current) + zr;
-            int FF_current = firstFit(current) + zr;
-            if (FF_current == LB) return FF_current;
-            if (FF_current == LB_current) {
-                if (min_res > FF_current) {
-                    min_res = FF_current;
+        int j;
+        int i = z;
+
+        //to all feasible initialized bins
+        for (j = 0; j < z; ++j) {
+            if (now[j] + now[i] <= c) {
+                int z1 = z;
+                vector<int> current(now);
+                current[j] += current[i];
+                current[i] = 0;
+                sort(current.rbegin(), current.rend());
+                if (current.back() == 0) {
+                    current.pop_back();            //delete the last item
                 }
-            } else {
+                int zr = reduction(current, z1, c) + z_reduction;
+                int LB_current = lowerBound2(current, c) + zr;
+                int FF_current = firstFit(current, c) + zr;
+//                printf("Lb %d,FF %d\n", LB_current, FF_current);
+
+
+                if (FF_current == LB) return FF_current;
                 if (UB > FF_current) {
                     UB = FF_current;
                 }
-                if (LB_current < UB) {
-                    int res;
-                    if (z1 + z_reduction >= FF_current) res = FF_current;
-                    else {
-                        printf("FF:%d, LB:%d\n", FF_current, LB_current);
-                        res = calc(current, z1, UB, LB, zr);
+                if (FF_current > LB_current && LB_current < UB) {
+                    if (z1 + zr <= UB) {
+//                        printf("FF:%d, LB:%d\n", FF_current, LB_current);
+                        s.push(initData2(current, z1, zr));
                     }
-                    if (min_res > res) {
-                        min_res = res;
-                    }
+//                        int res;
+//                        if (z1 + z_reduction >= FF_current) res = FF_current;
+//                        else {
+//                            printf("FF:%d, LB:%d\n", FF_current, LB_current);
+////                            res = calc(current, z1, UB, LB, zr);
+//                            s.push(initData2(current, z1, z_reduction));
+//                        }
+//                        if (min_res > res) {
+//                            min_res = res;
+//                        }
                 }
             }
+
+
         }
-
-    }
-    //create a new bin
-    if (j == z && z < UB) {
-        int z1 = z;
-        vector<int> current(now);
+        //create a new bin
+        if (j == z && z < UB) {
+            int z1 = z;
+            vector<int> current(now);
 //        current.push_back(items[i]);
-        z1++;
-        sort(current.rbegin(), current.rend());
-        int zr = reduction(current, z1) + z_reduction;
-        int LB_current = lowerBound2(current) + zr;
-        int FF_current = firstFit(current) + zr;
+            z1++;
+            sort(current.rbegin(), current.rend());
+            int zr = reduction(current, z1, c) + z_reduction;
+            int LB_current = lowerBound2(current, c) + zr;
+            int FF_current = firstFit(current, c) + zr;
 
-        if (FF_current == LB) return FF_current;
-        if (FF_current == LB_current) {
-            if (min_res > FF_current) {
-                min_res = FF_current;
-            }
-        } else {
+            if (FF_current == LB) return FF_current;
             if (UB > FF_current) {
                 UB = FF_current;
             }
-            if (LB_current < UB) {
-                int res;
-                if (z1 + z_reduction >= FF_current) res = FF_current;
-                else {
-                    printf("FF:%d, LB:%d\n", FF_current, LB_current);
-                    res = calc(current, z1, UB, LB, zr);
+            if (FF_current > LB_current && LB_current < UB) {
+
+                if (z1 + zr <= UB) {
+//                    printf("FF:%d, LB:%d\n", FF_current, LB_current);
+                    s.push(initData2(current, z1, zr));
                 }
-                if (min_res > res) {
-                    min_res = res;
-                }
+//                    int res;
+//                    if (z1 + z_reduction >= FF_current) res = FF_current;
+//                    else {
+//                        printf("FF:%d, LB:%d\n", FF_current, LB_current);
+////                        res = calc(current, z1, UB, LB, zr);
+//                        s.push(initData2(current, z1, z_reduction));
+//                    }
+//                    if (min_res > res) {
+//                        min_res = res;
+//                    }
             }
+
         }
     }
-    return min_res;
+    return UB;
 }
 
 int BNB(Data data) {
-    vector<int> &items=data.w;
+    vector<int> &items = data.w;
+    int n = data.n;
+    int c = data.c;
     sort(items.rbegin(), items.rend());
     vector<int> weight(items);
 
-    int LB = lowerBound2(weight);
-    int UB = firstFit(weight);
+    int LB = lowerBound2(weight, c);
+    int UB = firstFit(weight, c);
     if (LB == UB) return LB;
-
+    int L3= lowerBound3(weight,c);
     int z = 0;
-    int reduced = 0;
-    int z_res = reduction(weight, z);
+//    int reduced = 0;
+    int z_res = reduction(weight, z, c);
 
+    stack<Data2> s;
+    s.push(initData2(weight, z, z_res));
 //    UB = firstFit(weight);
 
 //    int LB = lowerBound2(weight, 0);
@@ -122,37 +142,33 @@ int BNB(Data data) {
 //    int res = calc(now, 0, 0, UB);
 
 
-    int res = calc(weight, z, UB, LB, z_res);
+    int res = calc(s, UB, LB, c);
     return res;
 
 
 }
 
-bool compare(int a, int b) {
-    return a > b;
 
-}
-
-vector<string> readFileDir(string PATH) {
+vector<string> readFileDir(const string &PATH) {
     struct dirent *ptr;
     DIR *dir;
     dir = opendir(PATH.c_str());
     vector<string> files;
-    while ((ptr = readdir(dir)) != NULL) {
+    while ((ptr = readdir(dir)) != nullptr) {
         if (ptr->d_name[0] == '.')
             continue;
 //        printf("%s\n", ptr->d_name);
-        files.push_back(ptr->d_name);
+        files.emplace_back(ptr->d_name);
     }
     return files;
 }
 
-Data getData(string filename) {
-    int n,c;
+Data getData(const string &filename) {
+    int n, c;
     vector<int> items;
-    string path = "./data/";
-    path.append(filename);
-    ifstream infile(path);
+//    string path = "./bin1data/";
+//    path.append(filename);
+    ifstream infile(filename);
     string line;
 
     getline(infile, line);
@@ -168,18 +184,21 @@ Data getData(string filename) {
         int num;
         istringstream iss(line);
         iss >> num;
-        items.push_back(num);
+        items.emplace_back(num);
     }
     infile.close();
 
-    return initData(n,c,items);
+    return initData(n, c, items);
 }
 
 int main() {
-    vector<string> files = readFileDir("data");
+    string path = "./bin1data/";
+    vector<string> files = readFileDir(path);
     for (int i = 0; i < files.size(); ++i) {
         printf("%d. filename: %s\n", i, files[i].c_str());
-        Data data=getData(files[i]);
+        string fileName = path;
+        fileName.append(files[i]);
+        Data data = getData(fileName);
         clock_t start, end;
         start = clock();
 

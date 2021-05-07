@@ -1,9 +1,9 @@
 #include <vector>
-#include "state.h"
+//#include "state.h"
 
 using namespace std;
 
-int firstFit(vector<int> items) {
+int firstFit(const vector<int> &items,int c) {
     int result = 0;
     int length = items.size();
     int ava[length];

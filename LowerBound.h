@@ -8,6 +8,8 @@
 
 //int lowerBound2(std::vector<int> w1, int index);
 
-int lowerBound2(std::vector<int> w1);
+int lowerBound2(const std::vector<int> &w1, int c);
 
-int reduction(std::vector<int> &w, int &z);
+int lowerBound3(const std::vector<int> &w1, int c);
+
+int reduction(std::vector<int> &w, int &z, int c);

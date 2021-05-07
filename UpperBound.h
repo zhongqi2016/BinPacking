@@ -3,7 +3,7 @@
 
 #endif //BINPACKING_BNB_UPPERBOUND_H
 
-int firstFit(std::vector<int> items);
+int firstFit(const std::vector<int> &items,int c);
 
 /// @param w1 - super items
 /// @param index - index of the first item in free items
