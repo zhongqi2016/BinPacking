@@ -4,19 +4,20 @@
 
 #include <vector>
 
-#endif //BINPACKING_BNB_DATA_H
-
-struct Data{
+struct DataInput{
     int n;
     int c;
     std::vector<int> w;
 };
 
-struct Data2{
+struct DataForCalc{
     std::vector<int> current;
     int z;
     int z_reduction;
 };
 
-Data initData(int n,int c,std::vector<int> w);
-Data2 initData2(std::vector<int> current,int z,int z_reduction);
+DataInput initData(int n,int c,std::vector<int> w);
+DataForCalc initData2(std::vector<int> current, int z, int z_reduction);
+
+#endif //BINPACKING_BNB_DATA_H
+

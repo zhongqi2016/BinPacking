@@ -1,9 +1,8 @@
 #include <vector>
-//#include "state.h"
 
 using namespace std;
 
-int firstFit(const vector<int> &items,int c) {
+int firstFit(const vector<int> &items, int c) {
     int result = 0;
     int length = items.size();
     int ava[length];
@@ -24,6 +23,28 @@ int firstFit(const vector<int> &items,int c) {
     return result;
 }
 
+int bestFit(const vector<int> &items, int c) {
+    int result = 0;
+    int length = items.size();
+    int ava[length];
+
+    for (int i = 0; i < length; ++i) {
+        int j;
+        int min = c + 1;
+        int bin_min = 0;
+        for (j = 0; j < result; j++) {
+            if (ava[j] >= items[i] && ava[j] - items[i] < min) {
+                min = ava[j] - items[i];
+                bin_min = j;
+            }
+        }
+        if (min == c + 1) {
+            ava[result] = c - items[i];
+            ++result;
+        } else ava[bin_min] -= items[i];
+    }
+    return result;
+}
 
 //int firstFit(vector<int> w1, int index) {
 //    int result = 0;

@@ -1,8 +1,6 @@
 #include <vector>
 #include <algorithm>
 #include "LowerBound.h"
-//#include "state.h"
-
 
 int L2withA(int alpha, const std::vector<int> &w, int c) {
     int J1 = 0;
@@ -29,7 +27,6 @@ int L2withA(int alpha, const std::vector<int> &w, int c) {
     return L;
 }
 
-//
 
 int lowerBound2(const std::vector<int> &w1, int c) {
     int max = 0;
@@ -47,11 +44,8 @@ int lowerBound2(const std::vector<int> &w1, int c) {
 
 int findLargestK(const std::vector<int> &w, int index, int c) {
     int sum = w[index];
-//    if (sum + w.back() > c) {
-//        return 0;
-//    }
     int k = 0;
-//    sum += w.back();
+
 
     for (int i = int(w.size()) - 1; i > 0; --i) {
         if (w[i] == 0 || i == index) continue;
@@ -169,7 +163,6 @@ int reduction(std::vector<int> &w, int &z, int c) {
 int lowerBound3(const std::vector<int> &w1, int c) {
     std::vector<int> w(w1);
     int n = w.size();
-    int n1 = 0;
     int L3 = 0;
     int L2;
     int z = 0;
@@ -181,61 +174,12 @@ int lowerBound3(const std::vector<int> &w1, int c) {
         if (n == 0) L2 = 0;
         else L2 = lowerBound2(w, c);
         L3 = std::max(L3, z + L2);
-        n = n - 1;
-        w.pop_back();
+        if (n > 0) {
+            n = n - 1;
+            w.pop_back();
+        }
     }
 
     return L3;
 }
 
-//int L2withA(int alpha, std::vector<int> w1, int index) {
-//    int J1 = 0;
-//    int J2 = 0;
-//    int J3 = 0;
-//    int sumJ3 = 0;
-//    int sumJ2 = 0;
-//    int length = w1.size();
-//    for (int i = 0; i < length; i++) {
-//        if (w1[i] != 0) {
-//            if (w1[i] > c - alpha) {
-//                J1++;
-//            } else if (w1[i] > c / 2) {
-//                J2++;
-//                sumJ2 += w1[i];
-//            } else if (w1[i] >= alpha) {
-//                J3++;
-//                sumJ3 += w1[i];
-//            }
-//        }
-//    }
-//
-//    for (int i = index; i < n; i++) {
-//        if (items[i] != 0) {
-//            if (items[i] > c - alpha) {
-//                J1++;
-//            } else if (items[i] > c / 2) {
-//                J2++;
-//                sumJ2 += items[i];
-//            } else if (items[i] >= alpha) {
-//                J3++;
-//                sumJ3 += items[i];
-//            }
-//        }
-//    }
-//
-//    int L = J1 + J2 + (std::max<int>(0, (sumJ3 - (J2 * c - sumJ2) + c - 1) / c));
-//    return L;
-//}
-//
-//int lowerBound2(std::vector<int> w1, int index) {
-//    int max = 0;
-//    int L;
-//
-//    for (int a = 0; a <= c / 2; a++) {
-//        L = L2withA(a, w1, index);
-//        if (L > max) {
-//            max = L;
-//        }
-//    }
-//    return max;
-//}
