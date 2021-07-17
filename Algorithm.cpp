@@ -11,8 +11,6 @@ void printItems(const std::vector<int> &items) {
 
 int calc(DataForCalc &node, int &UB, int LB, int c) {
 
-//#pragma omp parallel for
-//    {
     if (UB == LB) return UB;
     int z = node.z;
     int z_reduction = node.z_reduction;
@@ -36,7 +34,6 @@ int calc(DataForCalc &node, int &UB, int LB, int c) {
                 }
                 int zr = reduction(current, z1, c) + z_reduction;
                 int LB_current = lowerBound2(current, c) + zr;
-//                int FF_current = firstFit(current, c) + zr;
                 int FF_current = bestFit(current, c) + zr;
 
 #pragma omp critical
@@ -44,7 +41,6 @@ int calc(DataForCalc &node, int &UB, int LB, int c) {
                     UB = FF_current;
                 }
                 if (UB != LB) {
-//                return UB;
 
                     if (FF_current > LB_current && LB_current < UB) {
                         if (z1 + zr < UB) {
@@ -120,8 +116,6 @@ int BNB(DataInput data) {
     int z = 0;
     int z_res = reduction(weight, z, c);
 
-//    std::stack<DataForCalc> s;
-//    s.push(initData2(weight, z, z_res));
     DataForCalc calcData = initData2(weight, z, z_res);
     int res;
 #pragma omp parallel shared(res,UB)
