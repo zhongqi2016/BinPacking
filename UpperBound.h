@@ -1,9 +1,11 @@
 #ifndef BINPACKING_BNB_UPPERBOUND_H
 #define BINPACKING_BNB_UPPERBOUND_H
 
-int firstFit(const std::vector<int> &items, int c);
+#include "Bin.h"
 
-int bestFit(const std::vector<int> &items, int c);
+int firstFit( std::vector<Bin> &items, int c);
+
+int bestFit( std::vector<Bin> &items, int c);
 /// @param items - super items
 /// @return - Minimize number of used Bins
 
