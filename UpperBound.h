@@ -5,7 +5,7 @@
 
 int firstFit( std::vector<Bin> &items, int c);
 
-int bestFit( std::vector<Bin> &items, int c);
+int bestFit( std::vector<Bin> &items, int c,std::vector<Bin> &solution) ;
 /// @param items - super items
 /// @return - Minimize number of used Bins
 

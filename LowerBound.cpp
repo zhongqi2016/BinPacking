@@ -45,7 +45,6 @@ int findLargestK(const std::vector<Bin> &w, int index, int c) {
     int sum = w[index].sum;
     int k = 0;
 
-
     for (int i = int(w.size()) - 1; i > 0; --i) {
         if (w[i].sum == 0 || i == index) continue;
         if (sum + w[i].sum <= c) {
@@ -100,6 +99,28 @@ bool findAB(const std::vector<Bin> &w, int index, int &a, int &b, int c) {
     return flag;
 }
 
+int getPrevious(std::vector<Bin> &w, int currentNode, int num) {
+    int i;
+    for (i = currentNode - 1; i >= 0 && num > 0; --i) {
+        if (w[i].sum > 0) {
+            --num;
+        }
+    }
+    return i;
+}
+
+int getDistance(std::vector<Bin> &w, int a, int b) {
+    if (b < a) {
+        printf("error");
+        return -1;
+    }//error
+    int distance = 1;
+    for (int i = a + 1; i < b; ++i) {
+        if (w[i].sum > 0) ++distance;
+    }
+    return distance;
+}
+
 int reduction(std::vector<Bin> &w, int &z, int c) {
 //    std::vector<int> w(w1);
 //    w.reserve(n);
@@ -128,7 +149,9 @@ int reduction(std::vector<Bin> &w, int &z, int c) {
                     if (w[h].sum >= w[a].sum + w[b].sum) {
                         F.emplace_back(i);
                         F.emplace_back(h);
-                    } else if (w[h].sum == w[a].sum && (b - a <= 2 || w[i].sum + w[b - 1].sum + w[b - 2].sum > c)) {
+                    } else if (w[h].sum == w[a].sum && (getDistance(w, a, b) <= 2
+                                                        || w[i].sum + w[getPrevious(w, b, 1)].sum +
+                                                           w[getPrevious(w, b, 2)].sum > c)) {
                         F.emplace_back(i);
                         F.emplace_back(a);
                         F.emplace_back(b);
@@ -140,27 +163,23 @@ int reduction(std::vector<Bin> &w, int &z, int c) {
             ++zr;
             int sum = 0;
 
-
             if (z > 0) ++count;
             for (int j = 1; j < F.size(); ++j) {
-                mergeBin(w[F[0]],w[F[j]]);
+
+                mergeBin(w[F[0]], w[F[j]]);
                 bj[F[j]] = zr;
 //                printf("%d ",w[j]);
-                w[j].sum = 0;
+                w[F[j]].sum = 0;
                 ++reduced;
                 if (j < z) ++count;
-
             }
-//            printf("\n");
-//            reduced += int(F.size());
-        }
+            w[F[0]].sum = 0;
 
+        }
+//        binSort(w);
     }
-    z -= count;
-    binSort(w);
-    if (w[w.size() - reduced].sum == 0) {
-        w.resize(w.size() - reduced);
-    }
+//    z -= count;
+
     return zr;
 }
 

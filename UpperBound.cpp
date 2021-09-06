@@ -1,9 +1,9 @@
 
+#include <cstdio>
 #include "UpperBound.h"
 
-using namespace std;
 
-int firstFit( vector<Bin> &items, int c) {
+int firstFit( std::vector<Bin> &items, int c) {
     int result = 0;
     int length = items.size();
     int ava[length];
@@ -13,7 +13,7 @@ int firstFit( vector<Bin> &items, int c) {
         for (j = 0; j < result; ++j) {
             if (ava[j] >= items[i].sum) {
                 ava[j] -= items[i].sum;
-                mergeSerial(items[j],items[i]);
+                mergeBin(items[j],items[i]);
                 break;
             }
         }
@@ -25,30 +25,34 @@ int firstFit( vector<Bin> &items, int c) {
     return result;
 }
 
-int bestFit(vector<Bin> &items, int c) {
+int bestFit( std::vector<Bin> &items, int c,std::vector<Bin> &solution) {
     int result = 0;
     int length = items.size();
-    int ava[length];
+    solution.resize(length);
+//    int ava[length];
 
     for (int i = 0; i < length; ++i) {
+        if (items[i].sum<=0) continue;
         int j;
         int min = c + 1;
         int bin_min = 0;
         for (j = 0; j < result; j++) {
-            if (ava[j] >= items[i].sum && ava[j] - items[i].sum < min) {
-                min = ava[j] - items[i].sum;
+            if (solution[j].sum >= items[i].sum && solution[j].sum - items[i].sum < min) {
+                min = solution[j].sum - items[i].sum;
                 bin_min = j;
             }
         }
         if (min == c + 1) {
-            ava[result] = c - items[i].sum;
+            solution[result].sum = c - items[i].sum;
+            copySerial(solution[result],items[i]);
             ++result;
         } else {
-            ava[bin_min] -= items[i].sum;
-            mergeSerial(items[bin_min], items[i]);
+            solution[bin_min].sum -= items[i].sum;
+            copySerial(solution[bin_min], items[i]);
         }
     }
-    bin_print(items);
+//    bin_print(solution);
+//    printf("res= %d, real= %d\n",result, binUsed(solution));
     return result;
 }
 

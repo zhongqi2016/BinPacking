@@ -28,6 +28,9 @@ void mergeSerial(Bin &bin1, Bin &bin2);
 
 void binOrganize(std::vector<Bin> &binList, std::vector<int> &items);
 
-void bin_print(std::vector<Bin> &binList);
+void bin_print( std::vector<Bin> &binList);
 
+void copySerial(Bin &bin1,  Bin &bin2);
+
+int binUsed(std::vector<Bin> &binList, int z);
 #endif //BINPACKING_BNB_BIN_H

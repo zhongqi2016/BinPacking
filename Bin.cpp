@@ -11,10 +11,11 @@ Bin initBin(int sum, std::list<int> serial) {
     return bin;
 }
 
+
 std::vector<Bin> refactor(const std::vector<int> &items) {
     int length = items.size();
     std::vector<Bin> list;
-    list.reserve(length);
+
     for (int i = 0; i < length; ++i) {
         std::list<int> itemsInBin;
         itemsInBin.emplace_back(i);
@@ -44,6 +45,13 @@ void mergeSerial(Bin &bin1, Bin &bin2) {
     bin1.serial.splice(bin1.serial.end(), bin2.serial);
 }
 
+void copySerial(Bin &bin1, Bin &bin2) {
+    std::list<int>::iterator it;
+    for (it = bin2.serial.begin(); it != bin2.serial.end(); ++it) {
+        bin1.serial.push_back(*it);
+    }
+}
+
 void binOrganize(std::vector<Bin> &binList, std::vector<int> &items) {
     int count = 0;
     for (int i = 0; i < binList.size(); ++i) {
@@ -60,11 +68,11 @@ void binOrganize(std::vector<Bin> &binList, std::vector<int> &items) {
     binList.resize(binList.size() - count);
 }
 
-void bin_print(std::vector<Bin> &binList){
+void bin_print(std::vector<Bin> &binList) {
     for (int i = 0; i < binList.size(); ++i) {
         std::list<int>::iterator it;
-        printf("%d(",binList[i].sum);
-        std::list<int>& l=binList[i].serial;
+        printf("%d(", binList[i].sum);
+        std::list<int> &l = binList[i].serial;
         for (it = l.begin(); it != l.end(); ++it) {
             printf("%d, ", *it);
         }
@@ -72,3 +80,14 @@ void bin_print(std::vector<Bin> &binList){
     }
     printf("\n");
 }
+
+int binUsed(std::vector<Bin> &binList, int z) {
+    int count = 0;
+    for (int i = 0; i < z && binList.size(); ++i) {
+        if (binList[i].sum != 0) {
+            count++;
+        }
+    }
+    return count;
+}
+
