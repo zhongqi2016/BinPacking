@@ -48,7 +48,7 @@ DataInput getData(const string &filename) {
 int main() {
     string path = "./bin1data/";
     vector<string> files = readFileDir(path);
-    for (int i = 5; i < files.size(); ++i) {
+    for (int i = 0; i < files.size(); ++i) {
         printf("%d. filename: %s\n", i, files[i].c_str());
         string fileName = path;
         fileName.append(files[i]);

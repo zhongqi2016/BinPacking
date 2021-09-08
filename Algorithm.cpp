@@ -21,9 +21,9 @@ std::vector<Bin> calc(std::stack<DataForCalc> s, int &UB, int LB, int c) {
     while (!s.empty()) {
         DataForCalc node = s.top();
         s.pop();
-        int z = node.z;
-        int z_reduction = node.z_reduction;
-        std::vector<Bin> now = node.current;
+        int& z = node.z;
+        int& z_reduction = node.z_reduction;
+        std::vector<Bin>& now = node.current;
         skipDetermined(now, ++z);
         if (z == now.size() || now[z].sum == 0) return now;
         int i = z;
