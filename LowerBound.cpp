@@ -1,7 +1,7 @@
 
 #include "LowerBound.h"
 
-int L2withA(int alpha, std::vector<Bin> w, int c) {
+int L2withA(int alpha,const std::vector<Bin> &w, int c) {
     int J1 = 0;
     int J2 = 0;
     int J3 = 0;

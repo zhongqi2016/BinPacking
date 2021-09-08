@@ -24,12 +24,12 @@ std::vector<Bin> calc(std::stack<DataForCalc> s, int &UB, int LB, int c) {
         int z = node.z;
         int z_reduction = node.z_reduction;
         std::vector<Bin> now = node.current;
-        skipDetermined(now,++z);
-        if (z  == now.size() || now[z ].sum == 0) return now;
-        int i = z ;
+        skipDetermined(now, ++z);
+        if (z == now.size() || now[z].sum == 0) return now;
+        int i = z;
         //create a new bin
 
-        if (z  < UB-1) {
+        if (z < UB - 1) {
             int z1 = z;
             std::vector<Bin> current(now);
 //            binSort(current);
@@ -38,21 +38,21 @@ std::vector<Bin> calc(std::stack<DataForCalc> s, int &UB, int LB, int c) {
 
             int LB_current = lowerBound2(current, c) + zr;
             std::vector<Bin> solution_UB;
-            int UB_current = bestFit(current, c,  solution_UB) + zr;
+            int UB_current = bestFit(current, c, solution_UB) + zr;
 
             if (UB_current == LB) {
                 solution = &solution_UB;
-                getDetermined(*solution,current);
+                getDetermined(*solution, current);
                 return *solution;
             }
             if (UB > UB_current) {
                 UB = UB_current;
                 solution = &solution_UB;
-                getDetermined(*solution,current);
+                getDetermined(*solution, current);
             }
             if (UB_current > LB_current && LB_current < UB) {
 
-                if (binUsed(current,z1) + zr < UB) {
+                if (binUsed(current, z1) + zr < UB) {
                     int L3 = lowerBound3(current, c) + zr;
 
                     if (L3 < UB) {
@@ -67,9 +67,9 @@ std::vector<Bin> calc(std::stack<DataForCalc> s, int &UB, int LB, int c) {
 
         //to all feasible initialized bins
         int j;
-        for (j = z-1 ; j >= 0; --j) {
+        for (j = z - 1; j >= 0; --j) {
 
-            if (now[j].sum==0) continue;
+            if (now[j].sum == 0) continue;
             if (now[j].sum + now[i].sum <= c) {
                 int z1 = z;
                 std::vector<Bin> current(now);
@@ -79,22 +79,22 @@ std::vector<Bin> calc(std::stack<DataForCalc> s, int &UB, int LB, int c) {
                 int zr = reduction(current, z1, c) + z_reduction;
                 int LB_current = lowerBound2(current, c) + zr;
                 std::vector<Bin> solution_UB;
-                int UB_current = bestFit(current, c,solution_UB) + zr;
+                int UB_current = bestFit(current, c, solution_UB) + zr;
 
 //                bin_print(solution_UB);
                 if (UB_current == LB) {
                     solution = &solution_UB;
-                    getDetermined(*solution,current);
+                    getDetermined(*solution, current);
                     return *solution;
 //                    return UB_current;
                 }
                 if (UB > UB_current) {
                     UB = UB_current;
                     solution = &solution_UB;
-                    getDetermined(*solution,current);
+                    getDetermined(*solution, current);
                 }
                 if (UB_current > LB_current && LB_current < UB) {
-                    if (binUsed(current,z1) + zr < UB) {
+                    if (binUsed(current, z1) + zr < UB) {
                         int L3 = lowerBound3(current, c) + zr;
                         if (L3 < UB) {
 
@@ -149,9 +149,9 @@ int BNB(DataInput data) {
     std::stack<DataForCalc> s;
     s.push(initData2(binList, z, z_res));
     std::vector<Bin> res_calc = calc(s, UB, L3, c);
-    if (res_calc.size()==0) {
+    if (res_calc.size() == 0) {
         solution = &solution_UB;
-    }else { solution = &res_calc; }
+    } else { solution = &res_calc; }
 
     binOrganize(*solution, items);
     bin_print(*solution);
