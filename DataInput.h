@@ -11,13 +11,13 @@ struct DataInput{
 };
 
 struct DataForCalc{
-    std::vector<Bin> current;
+    std::list<Bin> current;
     int z;
     int z_reduction;
 };
 
 DataInput initData(int n,int c,std::vector<int> w);
-DataForCalc initData2(std::vector<Bin> current, int z, int z_reduction);
+DataForCalc initData2(std::list<Bin>* current, int z, int z_reduction);
 
 #endif //BINPACKING_BNB_DATA_H
 

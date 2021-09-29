@@ -8,10 +8,10 @@ DataInput initData(int n,int c,std::vector<int> w){
     return data1;
 }
 
-DataForCalc initData2(std::vector<Bin> current, int z, int z_reduction){
+DataForCalc initData2(std::list<Bin> *current,int z, int z_reduction){
     DataForCalc data2;
-    data2.current=std::move(current);
-    data2.z=std::move(z);
-    data2.z_reduction=std::move(z_reduction);
+    data2.current=*current;
+    data2.z=z;
+    data2.z_reduction=z_reduction;
     return data2;
 }
