@@ -4,8 +4,6 @@
 using namespace std;
 
 
-
-
 vector<string> readFileDir(const string &PATH) {
     struct dirent *ptr;
     DIR *dir;
