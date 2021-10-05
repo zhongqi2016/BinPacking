@@ -6,7 +6,7 @@
 
 Bin initBin(int sum, std::list<int> serial) {
     Bin bin;
-    bin.sum = std::move(sum);
+    bin.sum = sum;
     bin.serial = std::move(serial);
     return bin;
 }

@@ -58,7 +58,7 @@ int findLargestK(std::list<Bin> &w, std::list<Bin>::iterator index, int c) {
 }
 
 std::list<Bin>::iterator findMinH(std::list<Bin> &w, std::list<Bin>::iterator index, int c) {
-    for (std::list<Bin>::iterator it = w.begin(); it != w.end(); ++it) {
+    for (auto it = w.begin(); it != w.end(); ++it) {
         if (it->sum == 0 || it == index) continue;
         if (index->sum + it->sum <= c) {
             return it;
@@ -124,14 +124,14 @@ int reduction(std::list<Bin> &w, int &z, int c) {
         if (k == 0) {
             F.emplace_back(it);
         } else {
-            std::list<Bin>::iterator h = findMinH(w, it, c);
+            auto h = findMinH(w, it, c);
             if (h == w.end()) continue;
             if (k == 1 || it->sum + h->sum == c) {
                 F.emplace_back(it);
                 F.emplace_back(h);
             } else if (k == 2) {
-                std::list<Bin>::iterator a = w.begin();
-                std::list<Bin>::iterator b = w.begin();
+                auto a = w.begin();
+                auto b = w.begin();
                 if (findAB(w, it, a, b, c)) {
                     if (h->sum >= a->sum + b->sum) {
                         F.emplace_back(it);
@@ -166,16 +166,12 @@ int reduction(std::list<Bin> &w, int &z, int c) {
             for (auto j:F) {
                 if (std::distance(w.begin(),j) < z) ++count;
                 ss += j->sum;
-//                printf("%d ", j->sum);
                 newBin.serial.splice(newBin.serial.end(), j->serial);
                 if (j == it) ++it;
                 w.erase(j);
-//                printf("dl ");
                 ++reduced;
 
-
             }
-//            printf(" :%d\n", ss);
 
             w.emplace_back(newBin);
         }
