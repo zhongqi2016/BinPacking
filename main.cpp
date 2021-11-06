@@ -4,8 +4,6 @@
 using namespace std;
 
 
-
-
 vector<string> readFileDir(const string &PATH) {
     struct dirent *ptr;
     DIR *dir;
@@ -20,7 +18,7 @@ vector<string> readFileDir(const string &PATH) {
     return files;
 }
 
-DataInput getData(const string &filename) {
+BinPacking getData(const string &filename) {
     int n, c;
     vector<int> items;
 
@@ -44,24 +42,27 @@ DataInput getData(const string &filename) {
     }
     infile.close();
 
-    return initData(n, c, items);
+    return BinPacking(c, items);
 }
 
 int main() {
     string path = "./bin1data/";
     vector<string> files = readFileDir(path);
-    for (int i = 0; i < files.size(); ++i) {
+    for (int i = 6; i < files.size(); ++i) {
         printf("%d. filename: %s\n", i, files[i].c_str());
         string fileName = path;
         fileName.append(files[i]);
-        DataInput data = getData(fileName);
+
+        BinPacking binPacking = std::move(getData(fileName));
         clock_t start, end;
         start = clock();
 
-        int result = BNB(data);
+        int result = binPacking.BNB();
         end = clock();
         double time = (double) (end - start) / CLOCKS_PER_SEC;
+        binPacking.printSolution();
         printf("Number of bins needed = %d\nTime=%lf\n", result, time);
+//        break;
     }
 
     return 0;
