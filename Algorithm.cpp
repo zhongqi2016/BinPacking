@@ -5,18 +5,7 @@ int BinPacking::BNB() {
     sort(items.rbegin(), items.rend());
     Bound bound(c, items);
     UB = INT_MAX;
-/*
-    bound.addCurrentItem();
-    std::vector<int> curSolution(bound.getDistribution());
-     LB = bound.lowerBound2();
-    UB = bound.upperBound(curSolution);
-    solution = std::move(curSolution);
-    if (LB == UB) return LB;
-    int L3 = LB;
 
-    if (L3 == UB) return L3;
-    bound.reduction();
-*/
     std::stack<Bound> s;
     s.emplace(bound);
 
