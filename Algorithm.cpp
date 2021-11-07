@@ -47,12 +47,8 @@ int BinPacking::dfs(std::stack<Bound> s) {
 
             if (UB_current > LB_current && LB_current < UB) {
 
-                if (z + newBound.getReduced() < UB) {
-                    int L3 = newBound.lowerBound3();
-
-                    if (L3 < UB) {
-//                        printf("FF:%d, LB:%d, L3:%d, indexOfItem:%d\n", FF_current, LB_current, L3, z1 + zr);
-//                        printItems(current);
+                if (newBound.getIndexOfItem() + newBound.getReduced() < UB) {
+                    if (newBound.lowerBound3() < UB) {
                         s.push(newBound);
                     }
                 }
@@ -83,15 +79,15 @@ int BinPacking::dfs(std::stack<Bound> s) {
                     UB = UB_current;
                     solution = std::move(curSolution);
                 }
-                if (UB_current > LB_current && LB_current < UB) {
-                    if (z + newBound.getReduced() < UB) {
-                        int L3 = newBound.lowerBound3();
-                        if (L3 < UB) {
 
+                if (UB_current > LB_current && LB_current < UB) {
+                    if (newBound.getIndexOfItem() + newBound.getReduced() < UB) {
+                        if (newBound.lowerBound3()< UB) {
                             s.push(newBound);
                         }
                     }
                 }
+
             }
         }
 
