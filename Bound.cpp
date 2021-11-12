@@ -93,7 +93,7 @@ void Bound::mergeTwoItems(int index1, int index2) {
 }
 
 void Bound::addCurrentItem() {
-    items[indexOfItem].combination = true;
+//    items[indexOfItem].combination = true;
 
 }
 
@@ -195,7 +195,7 @@ void Bound::reduction() {
             for (int j : F) {
                 setDistribution(distribution, -reduced, items[j].index);
                 items[j].weight = 0;
-                if (items[j].combination) {
+                if (j<indexOfItem) {
                     ++count;
                 }
             }

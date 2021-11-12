@@ -46,7 +46,6 @@ int BinPacking::dfs(std::stack<Bound> s) {
             newBound.incrementIndex();
 
             if (UB_current > LB_current && LB_current < UB) {
-
                 if (newBound.getIndexOfItem() + newBound.getReduced() < UB) {
                     if (newBound.lowerBound3() < UB) {
                         s.push(newBound);
@@ -58,9 +57,8 @@ int BinPacking::dfs(std::stack<Bound> s) {
         }
 
         //to all feasible initialized bins
-        int j;
         z = bound.getIndexOfItem();
-        for (j = z - 1; j >= 0; --j) {
+        for (int j = z - 1; j >= 0; --j) {
             if (items[j].weight + items[z].weight <= c) {
 //                int z1 = z;
                 Bound newBound(bound);
