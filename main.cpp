@@ -1,5 +1,9 @@
-#include "Algorithm.h"
+//
+// Created by 吴中奇 on 2021/11/12.
+//
 
+#include "Algorithm.h"
+#include <iostream>
 
 using namespace std;
 
@@ -12,13 +16,13 @@ vector<string> readFileDir(const string &PATH) {
     while ((ptr = readdir(dir)) != nullptr) {
         if (ptr->d_name[0] == '.')
             continue;
-//        printf("%s\n", ptr->d_name);
+        //        printf("%s\n", ptr->d_name);
         files.emplace_back(ptr->d_name);
     }
     return files;
 }
 
-DataInput getData(const string &filename) {
+BinPacking getData(const string &filename) {
     int n, c;
     vector<int> items;
 
@@ -42,24 +46,28 @@ DataInput getData(const string &filename) {
     }
     infile.close();
 
-    return DataInput(n, c, items);
+    return BinPacking(c, items);
 }
 
 int main() {
     string path = "./bin1data/";
+
     vector<string> files = readFileDir(path);
-    for (int i = 10; i < files.size(); ++i) {
+    for (int i = 0; i < files.size(); ++i) {
         printf("%d. filename: %s\n", i, files[i].c_str());
         string fileName = path;
         fileName.append(files[i]);
-        DataInput data = getData(fileName);
+
+        BinPacking binPacking = std::move(getData(fileName));
         clock_t start, end;
         start = clock();
 
-        int result = BNB(data);
+        int result = binPacking.BNB();
         end = clock();
         double time = (double) (end - start) / CLOCKS_PER_SEC;
+        binPacking.printSolution();
         printf("Number of bins needed = %d\nTime=%lf\n", result, time);
+        //        break;
     }
 
     return 0;

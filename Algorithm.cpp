@@ -1,58 +1,54 @@
-
 #include "Algorithm.h"
 
-void getDetermined(std::vector<Bin> &solution, std::list<Bin> &current) {
-    for (auto it = current.rbegin(); it != current.rend(); ++it) {
-        if (it->sum == 0 && it->serial.size() != 0) {
-            solution.emplace_back(*it);
-        } else break;
-    }
+int BinPacking::BNB() {
+    std::vector<Item> items = refactor(weightOfItems);
+    sort(items.rbegin(), items.rend());
+    Bound bound(c, items);
+    UB = INT_MAX;
+
+    std::stack<Bound> s;
+    s.emplace(bound);
+
+//    L3 = LB;
+    int res = dfs(s);
+    organize();
+    return res;
 }
 
-
-std::vector<Bin> calc(std::stack<DataForCalc> &s, int &UB, int LB, int c) {
-    std::vector<Bin> *solution = NULL;
-    std::vector<Bin> solution_UB;
-    solution_UB.reserve(UB);
-
+int BinPacking::dfs(std::stack<Bound> s) {
     while (!s.empty()) {
-        DataForCalc node = s.top();
+        Bound bound = std::move(s.top());
         s.pop();
-        int &z = node.z;
-        int &z_reduction = node.z_reduction;
-        std::list<Bin> now = node.current;
 
-        auto iterator_z= std::next(now.begin(),z);
-        ++iterator_z;
-        if (iterator_z->sum==0) break;
+        int z = bound.getIndexOfItem();
+        std::vector<Item> &items = bound.getItems();
+        if (z == items.size() || items[z].weight == 0) return z + bound.getReduced();
 
+        //create a new bin
         if (z < UB - 1) {
-            int z1 = z;
-            ++z1;
-            std::list<Bin> current(now);
-            int zr = reduction(current, z1, c) + z_reduction;
+            Bound newBound(bound);
+            newBound.addCurrentItem();
+            newBound.reduction();
 
-            int LB_current = lowerBound2(current, c) + zr;
-            int UB_current = bestFit(current, c, solution_UB) + zr;
+            std::vector<int> curSolution(newBound.getDistribution());
+            int LB_current = newBound.lowerBound2();
+            int UB_current = newBound.upperBound(curSolution);
 
             if (UB_current == LB) {
-                solution = &solution_UB;
-                getDetermined(*solution, current);
-                return *solution;
+                solution = std::move(curSolution);
+                return UB_current;
+
             }
             if (UB > UB_current) {
                 UB = UB_current;
-                solution = &solution_UB;
-                getDetermined(*solution, current);
+                solution = std::move(curSolution);
             }
+            newBound.incrementIndex();
+
             if (UB_current > LB_current && LB_current < UB) {
-
-                if (z1 + zr < UB) {
-                    int L3 = lowerBound3(current, c) + zr;
-
-                    if (L3 < UB) {
-
-                        s.push(DataForCalc(&current, z1, zr));
+                if (newBound.getIndexOfItem() + newBound.getReduced() < UB) {
+                    if (newBound.lowerBound3() < UB) {
+                        s.push(newBound);
                     }
                 }
 
@@ -61,94 +57,55 @@ std::vector<Bin> calc(std::stack<DataForCalc> &s, int &UB, int LB, int c) {
         }
 
         //to all feasible initialized bins
+        z = bound.getIndexOfItem();
         for (int j = z - 1; j >= 0; --j) {
-            std::list<Bin> current(now);
-            auto iterator_j= std::next(current.begin(),j);
-            auto iterator_i=std::next(iterator_j,z-j);
+            if (items[j].weight + items[z].weight <= c) {
+//                int z1 = z;
+                Bound newBound(bound);
+                newBound.mergeTwoItems(j, z);
+                std::vector<int> curSolution(newBound.getDistribution());
 
-            if (iterator_i->sum == 0) break;
-            if (iterator_j->sum + iterator_i->sum <= c) {
-                int z1 = z;
-                mergeBin(current, iterator_i, iterator_j);
-                --z1;
-                int zr = reduction(current, z1, c) + z_reduction;
-                int LB_current = lowerBound2(current, c) + zr;
-                solution_UB.clear();
-                int UB_current = bestFit(current, c, solution_UB) + zr;
-//                bin_print(solution_UB);
+                newBound.reduction();
+                int LB_current = newBound.lowerBound2();
+                int UB_current = newBound.upperBound(curSolution);
+
                 if (UB_current == LB) {
-                    solution = &solution_UB;
-                    getDetermined(*solution, current);
-                    return *solution;
-//                    return UB_current;
+                    solution = std::move(curSolution);
+                    return UB_current;
                 }
                 if (UB > UB_current) {
                     UB = UB_current;
-                    solution = &solution_UB;
-                    getDetermined(*solution, current);
+                    solution = std::move(curSolution);
                 }
+
                 if (UB_current > LB_current && LB_current < UB) {
-                    if (z1 + zr < UB) {
-                        int L3 = lowerBound3(current, c) + zr;
-                        if (L3 < UB) {
-                            s.push(DataForCalc(&current, z1, zr));
+                    if (newBound.getIndexOfItem() + newBound.getReduced() < UB) {
+                        if (newBound.lowerBound3()< UB) {
+                            s.push(newBound);
                         }
                     }
                 }
+
             }
-
-
         }
 
     }
-
-
-    if (!solution) {
-        return {};
-    }
-    bin_print(*solution);
-    return *solution;
+    return UB;
 }
 
-
-int BNB(DataInput data) {
-    std::vector<Bin> *solution = NULL;
-    std::vector<int> &items = data.w;
-    std::sort(items.rbegin(), items.rend());
-    std::list<Bin> binList = refactor(items);
-
-//    bin_print(binList);
-    int c = data.c;
-
-    int LB = lowerBound2(binList, c);
-    std::vector<Bin> solution_UB;
-
-    int UB = bestFit(binList, c, solution_UB);
-    if (LB == UB) {
-        binOrganize(solution_UB, items);
-        solution = &solution_UB;
-        bin_print(*solution);
-        return LB;
+void BinPacking::organize() {
+    int min = *std::min_element(solution.begin(), solution.end());
+    if (min < 0) min = -min;
+    else return;
+    for (int &elem:solution) {
+        if (elem < 0)elem += min + 1;
+        else if (elem > 0) elem += min;
     }
-    int L3 = lowerBound3(binList, c);
+}
 
-    if (L3 == UB) {
-        binOrganize(solution_UB, items);
-        solution = &solution_UB;
-        bin_print(*solution);
-        return L3;
+void BinPacking::printSolution() {
+    for (auto index:solution) {
+        printf("%d ", index);
     }
-    int z = 0;
-//    std::vector<Bin> determined(UB);
-    int z_res = reduction(binList, z, c);
-
-    std::stack<DataForCalc> s;
-    s.push(DataForCalc(&binList, z, z_res));
-    std::vector<Bin> res_calc = calc(s, UB, L3, c);
-    if (res_calc.size() == 0) {
-        solution = &solution_UB;
-    } else { solution = &res_calc; }
-    binOrganize(*solution, items);
-    bin_print(*solution);
-    return solution->size();
+    printf("\n");
 }
