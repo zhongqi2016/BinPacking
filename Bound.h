@@ -41,17 +41,11 @@ public:
 
     int getReduced() { return reduced; }
 
-    void incrementIndex() {
-        ++indexOfItem;
-        while (items[indexOfItem].weight + items[indexOfItem].weight > c) {
-            ++indexOfItem;
-        }
-    }
+    void incrementIndex();
 
 
     std::vector<Item> &getItems() { return items; }
 
-    void addCurrentItem();
 
 private:
     ///capacity

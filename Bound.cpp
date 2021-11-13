@@ -92,10 +92,13 @@ void Bound::mergeTwoItems(int index1, int index2) {
     distribution[i] = items[index2].index;
 }
 
-void Bound::addCurrentItem() {
-//    items[indexOfItem].combination = true;
-
+void Bound::incrementIndex() {
+    ++indexOfItem;
+    while (items[indexOfItem].weight + items[indexOfItem].weight > c) {
+        ++indexOfItem;
+    }
 }
+
 
 int Bound::findLargestK(int index) const {
     int sum = items[index].weight;
@@ -195,7 +198,7 @@ void Bound::reduction() {
             for (int j : F) {
                 setDistribution(distribution, -reduced, items[j].index);
                 items[j].weight = 0;
-                if (j<indexOfItem) {
+                if (j < indexOfItem) {
                     ++count;
                 }
             }
@@ -278,7 +281,6 @@ int findMinH(const std::vector<int> &w, int index, int c) {
     //fail
     return -1;
 }
-
 
 
 bool findAB(const std::vector<int> &w, int index, int &a, int &b, int c) {

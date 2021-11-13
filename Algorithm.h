@@ -23,7 +23,9 @@ public:
 
 private:
     int dfs(std::stack<Bound> s);
+
     void organize();
+
     const int c;//capacity of bin
     int UB;
     int LB;

@@ -9,7 +9,6 @@ int BinPacking::BNB() {
     std::stack<Bound> s;
     s.emplace(bound);
 
-//    L3 = LB;
     int res = dfs(s);
     organize();
     return res;
@@ -27,7 +26,6 @@ int BinPacking::dfs(std::stack<Bound> s) {
         //create a new bin
         if (z < UB - 1) {
             Bound newBound(bound);
-            newBound.addCurrentItem();
             newBound.reduction();
 
             std::vector<int> curSolution(newBound.getDistribution());
@@ -80,7 +78,7 @@ int BinPacking::dfs(std::stack<Bound> s) {
 
                 if (UB_current > LB_current && LB_current < UB) {
                     if (newBound.getIndexOfItem() + newBound.getReduced() < UB) {
-                        if (newBound.lowerBound3()< UB) {
+                        if (newBound.lowerBound3() < UB) {
                             s.push(newBound);
                         }
                     }
