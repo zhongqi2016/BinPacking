@@ -8,7 +8,7 @@
 #include <dirent.h>
 #include <stack>
 
-#include "Bound.h"
+#include "Branch.h"
 
 class BinPacking {
 public:
@@ -22,7 +22,7 @@ public:
     void printSolution();
 
 private:
-    int dfs(std::stack<Bound> s);
+    int dfs(std::stack<Branch> s);
 
     void organize();
 

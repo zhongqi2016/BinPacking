@@ -3,10 +3,10 @@
 int BinPacking::BNB() {
     std::vector<Item> items = refactor(weightOfItems);
     sort(items.rbegin(), items.rend());
-    Bound bound(c, items);
+    Branch bound(c, items);
     UB = INT_MAX;
 
-    std::stack<Bound> s;
+    std::stack<Branch> s;
     s.emplace(bound);
 
     int res = dfs(s);
@@ -14,9 +14,9 @@ int BinPacking::BNB() {
     return res;
 }
 
-int BinPacking::dfs(std::stack<Bound> s) {
+int BinPacking::dfs(std::stack<Branch> s) {
     while (!s.empty()) {
-        Bound bound = std::move(s.top());
+        Branch bound = std::move(s.top());
         s.pop();
 
         int z = bound.getIndexOfItem();
@@ -25,7 +25,7 @@ int BinPacking::dfs(std::stack<Bound> s) {
 
         //create a new bin
         if (z < UB - 1) {
-            Bound newBound(bound);
+            Branch newBound(bound);
             newBound.reduction();
 
             std::vector<int> curSolution(newBound.getDistribution());
@@ -59,7 +59,7 @@ int BinPacking::dfs(std::stack<Bound> s) {
         for (int j = z - 1; j >= 0; --j) {
             if (items[j].weight + items[z].weight <= c) {
 //                int z1 = z;
-                Bound newBound(bound);
+                Branch newBound(bound);
                 newBound.mergeTwoItems(j, z);
                 std::vector<int> curSolution(newBound.getDistribution());
 

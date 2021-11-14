@@ -2,22 +2,22 @@
 // Created by 吴中奇 on 2021/11/1.
 //
 
-#ifndef BINPACKING_BNB_BOUND_H
-#define BINPACKING_BNB_BOUND_H
+#ifndef BINPACKING_BNB_BRANCH_H
+#define BINPACKING_BNB_BRANCH_H
 
 #include <vector>
 #include <climits>
 #include <unordered_map>
 #include "Item.h"
 
-class Bound {
+class Branch {
 public:
     ///
     /// \param _c Capacity
     /// \param _items
-    Bound(int _c, std::vector<Item> &_items) : c(_c), items(_items), indexOfItem(0),
-                                               reduced(0),
-                                               distribution(std::vector<int>(_items.size(), 0)) {}
+    Branch(int _c, std::vector<Item> &_items) : c(_c), items(_items), indexOfItem(0),
+                                                reduced(0),
+                                                distribution(std::vector<int>(_items.size(), 0)) {}
 
     ///Lower bound L2
     int lowerBound2() const;
@@ -71,4 +71,4 @@ private:
     void printDistribution() const;
 };
 
-#endif //BINPACKING_BNB_BOUND_H
+#endif //BINPACKING_BNB_BRANCH_H
