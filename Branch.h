@@ -37,9 +37,9 @@ public:
 
     std::vector<int> &getDistribution() { return distribution; }
 
-    int getIndexOfItem() { return indexOfItem; }
+    int getIndexOfItem() const { return indexOfItem; }
 
-    int getReduced() { return reduced; }
+    int getReduced() const { return reduced; }
 
     void incrementIndex();
 

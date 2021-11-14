@@ -1,4 +1,4 @@
-#include "Algorithm.h"
+#include "BinPacking.h"
 
 int BinPacking::BNB() {
     std::vector<Item> items = refactor(weightOfItems);

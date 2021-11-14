@@ -1,6 +1,6 @@
 
-#ifndef BINPACKING_BNB_ALGORITHM_H
-#define BINPACKING_BNB_ALGORITHM_H
+#ifndef BINPACKING_BNB_BINPACKING_H
+#define BINPACKING_BNB_BINPACKING_H
 
 #include <algorithm>
 #include <fstream>
@@ -30,9 +30,9 @@ private:
     int UB;
     int LB;
     std::vector<int> weightOfItems;
-    std::vector<int> solution;
+    std::vector<int> solution;  //Current optimal solution
 };
 
 
-#endif //BINPACKING_BNB_ALGORITHM_H
+#endif //BINPACKING_BNB_BINPACKING_H
 

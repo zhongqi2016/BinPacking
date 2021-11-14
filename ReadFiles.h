@@ -6,11 +6,11 @@
 #define BINPACKING_BNB_READFILES_H
 
 #include <string>
-#include "Algorithm.h"
+#include "BinPacking.h"
 
 class ReadFiles {
 public:
-    ReadFiles(const std::string &PATH);
+    explicit ReadFiles(const std::string &PATH);
 
     BinPacking getData(int index);
 
