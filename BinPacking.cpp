@@ -3,11 +3,24 @@
 int BinPacking::BNB() {
     std::vector<Item> items = refactor(weightOfItems);
     sort(items.rbegin(), items.rend());
-    Branch bound(c, items);
-    UB = INT_MAX;
+    Branch branch(c, items);
 
+    branch.reduction();
+    solution=branch.getDistribution();
+    LB = branch.lowerBound2();
+    UB = branch.upperBound(solution);
+
+    if (UB== LB) {
+        organize();
+        return UB;
+    }
+    LB=branch.lowerBound3();
+    if (UB== LB) {
+        organize();
+        return UB;
+    }
     std::stack<Branch> s;
-    s.emplace(bound);
+    s.emplace(branch);
 
     int res = dfs(s);
     organize();
@@ -16,21 +29,21 @@ int BinPacking::BNB() {
 
 int BinPacking::dfs(std::stack<Branch> s) {
     while (!s.empty()) {
-        Branch bound = std::move(s.top());
+        Branch branch = std::move(s.top());
         s.pop();
 
-        int z = bound.getIndexOfItem();
-        std::vector<Item> &items = bound.getItems();
-        if (z == items.size() || items[z].weight == 0) return z + bound.getReduced();
+        int z = branch.getIndexOfItem();
+        std::vector<Item> &items = branch.getItems();
+        if (z == items.size() || items[z].weight == 0) return z + branch.getReduced();
 
         //create a new bin
         if (z < UB - 1) {
-            Branch newBound(bound);
-            newBound.reduction();
+            Branch newBranch(branch);
+            newBranch.reduction();
 
-            std::vector<int> curSolution(newBound.getDistribution());
-            int LB_current = newBound.lowerBound2();
-            int UB_current = newBound.upperBound(curSolution);
+            std::vector<int> curSolution(newBranch.getDistribution());
+            int LB_current = newBranch.lowerBound2();
+            int UB_current = newBranch.upperBound(curSolution);
 
             if (UB_current == LB) {
                 solution = std::move(curSolution);
@@ -41,12 +54,12 @@ int BinPacking::dfs(std::stack<Branch> s) {
                 UB = UB_current;
                 solution = std::move(curSolution);
             }
-            newBound.incrementIndex();
+            newBranch.incrementIndex();
 
             if (UB_current > LB_current && LB_current < UB) {
-                if (newBound.getIndexOfItem() + newBound.getReduced() < UB) {
-                    if (newBound.lowerBound3() < UB) {
-                        s.push(newBound);
+                if (newBranch.getIndexOfItem() + newBranch.getReduced() < UB) {
+                    if (newBranch.lowerBound3() < UB) {
+                        s.push(newBranch);
                     }
                 }
 
@@ -55,17 +68,17 @@ int BinPacking::dfs(std::stack<Branch> s) {
         }
 
         //to all feasible initialized bins
-        z = bound.getIndexOfItem();
+        z = branch.getIndexOfItem();
         for (int j = z - 1; j >= 0; --j) {
             if (items[j].weight + items[z].weight <= c) {
 //                int z1 = z;
-                Branch newBound(bound);
-                newBound.mergeTwoItems(j, z);
-                std::vector<int> curSolution(newBound.getDistribution());
+                Branch newBranch(branch);
+                newBranch.mergeTwoItems(j, z);
+                std::vector<int> curSolution(newBranch.getDistribution());
 
-                newBound.reduction();
-                int LB_current = newBound.lowerBound2();
-                int UB_current = newBound.upperBound(curSolution);
+                newBranch.reduction();
+                int LB_current = newBranch.lowerBound2();
+                int UB_current = newBranch.upperBound(curSolution);
 
                 if (UB_current == LB) {
                     solution = std::move(curSolution);
@@ -77,9 +90,9 @@ int BinPacking::dfs(std::stack<Branch> s) {
                 }
 
                 if (UB_current > LB_current && LB_current < UB) {
-                    if (newBound.getIndexOfItem() + newBound.getReduced() < UB) {
-                        if (newBound.lowerBound3() < UB) {
-                            s.push(newBound);
+                    if (newBranch.getIndexOfItem() + newBranch.getReduced() < UB) {
+                        if (newBranch.lowerBound3() < UB) {
+                            s.push(newBranch);
                         }
                     }
                 }

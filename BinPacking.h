@@ -12,7 +12,7 @@
 
 class BinPacking {
 public:
-    BinPacking(int _c, std::vector<int> _weight) : c(_c), weightOfItems(_weight), UB(0),
+    BinPacking(int _c, std::vector<int> _weight) : c(_c), weightOfItems(_weight), UB(0),LB(0),
                                                    solution(std::vector<int>(_weight.size(), 0)) {}
 
     int BNB();
